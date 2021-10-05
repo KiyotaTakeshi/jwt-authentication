@@ -29,13 +29,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepo.findByUserName(userName);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepo.findByUsername(username);
         if (user == null) {
             log.error("User not found in the DB");
             throw new UsernameNotFoundException("User not found in the DB");
         } else {
-            log.info("User found in the DB: {}", userName);
+            log.info("User found in the DB: {}", username);
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         // public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         return new org.springframework.security.core.userdetails.User(
-                user.getUserName(),
+                user.getUsername(),
                 user.getPassword(),
                 authorities
         );
@@ -81,14 +81,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUser(String userName) {
         log.info("Fetching user {}", userName);
-        return userRepo.findByUserName(userName);
+        return userRepo.findByUsername(userName);
     }
-
-//    @Override
-//    public User getUser(String userName) {
-//        log.info("Fetching user {}", userName);
-//        return userRepo.findByUserName(userName);
-//    }
 
     @Override
     public List<User> getUsers() {

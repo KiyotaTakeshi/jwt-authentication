@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,6 +22,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.*;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -38,12 +40,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**").permitAll()
-                .antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_USER")
-                .antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_MANAGER")
-                .antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_ADMIN")
+
+        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
+        // 以下のように同一メソッド、パスに対して複数設定を入れると後のものだけ適用される
+        // http.authorizeRequests().antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_USER");
+        // http.authorizeRequests().antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_MANAGER");
+        http.authorizeRequests()
+                .antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_USER","ROLE_MANAGER", "ROLE_ADMIN")
                 .antMatchers(POST, "/api/users/**").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated();
+
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

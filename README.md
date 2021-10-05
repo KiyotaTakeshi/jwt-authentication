@@ -50,7 +50,7 @@ unset SPRING_PROFILES_ACTIVE
 you can you [postman collection](./postman)
 
 ```shell
-$ curl --dump-header - --location --request POST 'http://localhost:8080/login' \
+$ curl --dump-header - --location --request POST 'http://localhost:8080/api/login' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'userName=mike' \
 --data-urlencode 'password=passw0rd' -s | grep -E 'HTTP|access_token|refresh_token'

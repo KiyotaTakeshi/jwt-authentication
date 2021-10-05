@@ -30,12 +30,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/login")) {
+        if (request.getServletPath().equals("/api/login") || request.getServletPath().equals("/api/token/refresh")) {
             // CustomAuthenticationFilter が呼ばれる
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
                 try {
                     String token = authorizationHeader.substring("Bearer ".length());
                     Algorithm algorithm = Algorithm.HMAC256("a20fd5b9-2bb9-4958-9f8c-b3fdf5f82157".getBytes());
@@ -53,9 +53,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 } catch (Exception ex) {
                     log.error("Error loggin in: {}", ex.getMessage());
-                    response.setHeader("error", ex.getMessage());
+                    response.setHeader("Error", ex.getMessage());
                     response.setStatus(FORBIDDEN.value());
-                    // response.sendError(FORBIDDEN.value());
                     HashMap<String, String> error = new HashMap<>();
                     error.put("error_message", ex.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);

@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "bc30ac85-b106-4bc3-b05e-a9af61a6fec7",
+		"_postman_id": "48e1d984-27fa-4651-b46c-0052ce0af27c",
 		"name": "jwt-sample",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Login(retrieve token)",
+			"name": "Login(retrieve token with USER role)",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -14,7 +14,7 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
-							"key": "userName",
+							"key": "username",
 							"value": "mike",
 							"type": "text"
 						},
@@ -40,6 +40,100 @@
 			"response": []
 		},
 		{
+			"name": "aLogin(retrieve token with MANAGER role)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "kanye",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "passw1rd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/login",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "aLogin(retrieve token with ADMIN role)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "kendrick",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "passw2rd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/login",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token refresh",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{REFRESH_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/token/refresh",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"token",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Users",
 			"request": {
 				"method": "GET",
@@ -47,18 +141,138 @@
 					{
 						"key": "Authorization",
 						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "text",
-						"disabled": true
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer invalid",
-						"type": "text",
-						"disabled": true
+						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://{{HOST}}{{PORT}}/api/users/",
+					"raw": "http://{{HOST}}{{PORT}}/api/users",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Roles(MANAGER or ADMIN Role require)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/roles",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User(ADMIN Role require)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"talyor\",\n    \"username\": \"talyor the ...\",\n    \"password\": \"passw3rd\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/users",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Role(ADMIN Role require)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"name\": \"ROLE_MODERATOR\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/roles",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Attach New Role(ADMIN Role require)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 7,\n    \"name\": \"ROLE_MODERATOR\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/users/5/roles",
 					"protocol": "http",
 					"host": [
 						"{{HOST}}{{PORT}}"
@@ -66,7 +280,8 @@
 					"path": [
 						"api",
 						"users",
-						""
+						"5",
+						"roles"
 					]
 				}
 			},
@@ -104,7 +319,11 @@
 		},
 		{
 			"key": "ACCESS_TOKEN",
-			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtlIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTA4MC9hcGkvbG9naW4iLCJleHAiOjE2MzM0MjY3MzN9.rftilY4hv-WdffOAodLH_UaqgdLqZwx5QBYUCiIa894"
+			"value": ""
+		},
+		{
+			"key": "REFRESH_TOKEN",
+			"value": ""
 		}
 	]
 }
