@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: jwt-sample-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: userservice
+      MYSQL_USER: jwt-sample
+      MYSQL_PASSWORD: "1qazxsw2"
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - .docker/db/data:/var/lib/mysql
+      - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - 3306:3306

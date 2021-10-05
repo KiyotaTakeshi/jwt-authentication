@@ -1,0 +1,110 @@
+{
+	"info": {
+		"_postman_id": "bc30ac85-b106-4bc3-b05e-a9af61a6fec7",
+		"name": "jwt-sample",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login(retrieve token)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "mike",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "passw0rd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/login",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer invalid",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://{{HOST}}{{PORT}}/api/users/",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}{{PORT}}"
+					],
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "localhost"
+		},
+		{
+			"key": "PORT",
+			"value": ":9080"
+		},
+		{
+			"key": "ACCESS_TOKEN",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtlIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTA4MC9hcGkvbG9naW4iLCJleHAiOjE2MzM0MjY3MzN9.rftilY4hv-WdffOAodLH_UaqgdLqZwx5QBYUCiIa894"
+		}
+	]
+}

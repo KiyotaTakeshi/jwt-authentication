@@ -1,0 +1,8 @@
+server:
+  port: 9080
+spring:
+  jpa:
+    show-sql: true
+
+# パラメータの値をログに表示 ex.) binding parameter [1] as [INTEGER] - [1]
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
