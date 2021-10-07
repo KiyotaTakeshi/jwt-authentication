@@ -10,3 +10,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
       format_sql: true
+kiyotakeshi:
+  jwtSecret: "a20fd5b9-2bb9-4958-9f8c-b3fdf5f82157"
+  jwtExpirationMs: 600000 # 10分(10 * 60 * 1000)

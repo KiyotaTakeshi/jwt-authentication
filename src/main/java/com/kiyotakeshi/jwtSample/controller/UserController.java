@@ -7,12 +7,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kiyotakeshi.jwtSample.Domain.Role;
 import com.kiyotakeshi.jwtSample.Domain.User;
-import com.kiyotakeshi.jwtSample.permissions.RoleReadPermission;
+import com.kiyotakeshi.jwtSample.security.jwt.JwtUtils;
+import com.kiyotakeshi.jwtSample.security.permissions.RoleReadPermission;
 import com.kiyotakeshi.jwtSample.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -31,8 +31,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class UserContoller {
+public class UserController {
+
     private final UserService userService;
+
+    private final JwtUtils jwtUtils;
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
@@ -77,21 +80,7 @@ public class UserContoller {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
-                String refreshToken = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("a20fd5b9-2bb9-4958-9f8c-b3fdf5f82157".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String username = decodedJWT.getSubject();
-                User user = userService.getUser(username);
-                String accessToken = JWT.create()
-                        .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10分間有効
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-                        .sign(algorithm);
-                HashMap<String, String> tokens = new HashMap<>();
-                tokens.put("access_token",accessToken);
-                tokens.put("refresh_token",refreshToken);
+                HashMap<String, String> tokens = jwtUtils.regenerateJwtToken(request, authorizationHeader);
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
             } catch (Exception ex) {

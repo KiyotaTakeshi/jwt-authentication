@@ -1,4 +1,4 @@
-package com.kiyotakeshi.jwtSample.permissions;
+package com.kiyotakeshi.jwtSample.security.permissions;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
